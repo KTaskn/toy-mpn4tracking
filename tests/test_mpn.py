@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch_geometric.data import Data
 from mpn import Layer, MPN
+import pandas as pd
 
 def generate_data():    
     edge_index = torch.tensor([[0, 1, 1, 2],
@@ -9,7 +10,7 @@ def generate_data():
     x = torch.tensor([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0], [2.0, 2.0, 2.0]], dtype=torch.float)
 
     return Data(x=x, edge_index=edge_index)
-    
+        
 
 def test_mpn():
     data = generate_data()
@@ -29,7 +30,6 @@ def test_mpn():
     predicts = mpn(M, H, data.edge_index)
     loss = cel(predicts, labels)
     loss.backward()
-    
 
 
 def test_mpnlayer():

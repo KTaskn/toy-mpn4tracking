@@ -31,6 +31,6 @@ def gendata(N):
         print(f"{r:.3},{g:.3},{b:.3},{x},{y}")
 
 if __name__ == "__main__":
-    N, G = 100, 6
+    N, G = 10, 3
     for i in range(G):
         gendata(N)
