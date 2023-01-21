@@ -28,4 +28,5 @@ def test_generate_train_dataset():
     df = pd.read_csv("./tests/sequences.csv")
     graph, labels = generate_train_dataset(df)
     assert labels.size(0) == graph.num_edges
+    assert labels.size(1) == 1
     

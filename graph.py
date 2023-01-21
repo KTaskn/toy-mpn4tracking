@@ -36,4 +36,4 @@ def generate_train_dataset(df):
     graph = generate_graph(df)
     labels = generate_labels(df)
     
-    return graph, torch.tensor([row in labels.tolist() for row in graph.edge_index.T.tolist()], dtype=torch.long)
+    return graph, torch.tensor([[row in labels.tolist()] for row in graph.edge_index.T.tolist()], dtype=torch.long)
