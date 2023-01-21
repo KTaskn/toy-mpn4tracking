@@ -17,7 +17,7 @@ def generate_graph(df):
 
 ID_COLUMNS = ["id", "bf"]
 def generate_labels(df):
-    df = df[ID_COLUMNS]
+    df = df[ID_COLUMNS].copy()
     df["vidx"] = df.index.tolist()
     df = pd.merge(
         df.pipe(lambda df: df[df["bf"] != "#"])[["bf", "vidx"]].rename(columns={"bf": "id"}),
@@ -36,4 +36,4 @@ def generate_train_dataset(df):
     graph = generate_graph(df)
     labels = generate_labels(df)
     
-    return graph, torch.tensor([[row in labels.tolist()] for row in graph.edge_index.T.tolist()], dtype=torch.long)
+    return graph, torch.tensor([row in labels.tolist() for row in graph.edge_index.T.tolist()], dtype=torch.long)

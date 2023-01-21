@@ -5,21 +5,29 @@ from torch_geometric.nn import MessagePassing
 
 class Layer(MessagePassing):
     def __init__(self, node_dim=3, edge_dim=3):
-        super().__init__(aggr='max') #  "Max" aggregation.
+        super().__init__(aggr='add') #  "Max" aggregation.
         dim = 2 * node_dim + edge_dim
         self.mlp_e = nn.Sequential(
-            nn.Linear(dim, dim // 2),
+            nn.Linear(dim, 20),
+            nn.BatchNorm1d(num_features=20),
             nn.ReLU(),
-            nn.Linear(dim // 2, edge_dim),
+            nn.Linear(20, 20),
+            nn.BatchNorm1d(num_features=20),
+            nn.ReLU(),
+            nn.Linear(20, edge_dim),
         )
         self.mlp_v = nn.Sequential(
-            nn.Linear(2 * node_dim, node_dim),
+            nn.Linear(2 * node_dim, 20),
+            nn.BatchNorm1d(num_features=20),
             nn.ReLU(),
-            nn.Linear(node_dim, node_dim),
+            nn.Linear(20, 20),
+            nn.BatchNorm1d(num_features=20),
+            nn.ReLU(),
+            nn.Linear(20, node_dim),
         )
 
     def forward(self, M, H, edge_index):
-        return self.propagate(edge_index, size=M.size(), M=M, H=H)
+        return self.propagate(edge_index, M=M, H=H)
 
     def message(self, M_i, M_j, H, edge_index):
         H = self.mlp_e(torch.cat([M_i, M_j, H], dim=1))
@@ -36,8 +44,13 @@ class MPN(nn.Module):
         self.num_layer = num_layer
         self.layer = Layer(node_dim, edge_dim)
         self.mlp = nn.Sequential(
-            nn.Linear(edge_dim, 1),
-            nn.ReLU()
+            nn.Linear(edge_dim, edge_dim),
+            nn.BatchNorm1d(num_features=edge_dim),
+            nn.ReLU(),
+            nn.Linear(edge_dim, edge_dim),
+            nn.BatchNorm1d(num_features=edge_dim),
+            nn.ReLU(),
+            nn.Linear(edge_dim, 2),
         )
         
     def forward(self, M, H, edge_index):

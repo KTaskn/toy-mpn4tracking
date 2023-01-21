@@ -1,3 +1,5 @@
 .ipynb_checkpoints
 datasets
 *.pyc
+*.csv
+*.sh
