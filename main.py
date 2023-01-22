@@ -10,7 +10,7 @@ from glob import glob
 from sklearn.metrics import f1_score, confusion_matrix
 
 EPOCH = 100000
-NUM_LAYER = 3
+NUM_LAYER = 5
 CUDA = True
 if __name__ == "__main__":
     print("loading datasets")
@@ -22,9 +22,9 @@ if __name__ == "__main__":
     
     optimizer = optim.Adam(
         mpn.parameters(),
-        lr=3e-4,
-        weight_decay=1e-4,
-        betas=(0.9, 0.999),
+        lr=3e-5,
+        # weight_decay=1e-4,
+        # betas=(0.9, 0.999),
     )
         
     pbar = tqdm(range(EPOCH))
@@ -40,7 +40,7 @@ if __name__ == "__main__":
                 
                 predicts = mpn(graph.x, H, graph.edge_index)
                 f1 = f1_score(labels.cpu().numpy(), np.argmax(predicts.cpu().numpy(), axis=1))
-                print(confusion_matrix(labels.cpu().numpy(), np.argmax(predicts.cpu().numpy(), axis=1)))
+                # print(confusion_matrix(labels.cpu().numpy(), np.argmax(predicts.cpu().numpy(), axis=1)))
 
         sum_loss = 0
         mpn.train()

@@ -5,25 +5,27 @@ from torch_geometric.nn import MessagePassing
 
 class Layer(MessagePassing):
     def __init__(self, node_dim=3, edge_dim=3):
-        super().__init__(aggr='add') #  "Max" aggregation.
+        super().__init__(aggr='add')
         dim = 2 * node_dim + edge_dim
+        middle_e = dim // 2
         self.mlp_e = nn.Sequential(
-            nn.Linear(dim, 20),
-            nn.BatchNorm1d(num_features=20),
+            nn.Linear(dim, middle_e),
+            nn.BatchNorm1d(num_features=middle_e),
+            # nn.ReLU(),
+            # nn.Linear(middle_e, middle_e),
+            # nn.BatchNorm1d(num_features=middle_e),
             nn.ReLU(),
-            nn.Linear(20, 20),
-            nn.BatchNorm1d(num_features=20),
-            nn.ReLU(),
-            nn.Linear(20, edge_dim),
+            nn.Linear(middle_e, edge_dim),
         )
+        middle_v = node_dim
         self.mlp_v = nn.Sequential(
-            nn.Linear(2 * node_dim, 20),
-            nn.BatchNorm1d(num_features=20),
+            nn.Linear(2 * node_dim, middle_v),
+            nn.BatchNorm1d(num_features=middle_v),
+            # nn.ReLU(),
+            # nn.Linear(middle_v, middle_v),
+            # nn.BatchNorm1d(num_features=middle_v),
             nn.ReLU(),
-            nn.Linear(20, 20),
-            nn.BatchNorm1d(num_features=20),
-            nn.ReLU(),
-            nn.Linear(20, node_dim),
+            nn.Linear(middle_v, node_dim),
         )
 
     def forward(self, M, H, edge_index):
@@ -46,11 +48,12 @@ class MPN(nn.Module):
         self.mlp = nn.Sequential(
             nn.Linear(edge_dim, edge_dim),
             nn.BatchNorm1d(num_features=edge_dim),
-            nn.ReLU(),
-            nn.Linear(edge_dim, edge_dim),
-            nn.BatchNorm1d(num_features=edge_dim),
+            # nn.ReLU(),
+            # nn.Linear(edge_dim, edge_dim),
+            # nn.BatchNorm1d(num_features=edge_dim),
             nn.ReLU(),
             nn.Linear(edge_dim, 2),
+            nn.Softmax(dim=1)
         )
         
     def forward(self, M, H, edge_index):
