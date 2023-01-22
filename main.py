@@ -11,7 +11,7 @@ from sklearn.metrics import f1_score, confusion_matrix
 from sklearn.utils.class_weight import compute_class_weight
 
 EPOCH = 100000
-NUM_LAYER = 12
+NUM_LAYER = 5
 CUDA = True
 EDGE_DIM = 5
 if __name__ == "__main__":
@@ -24,16 +24,16 @@ if __name__ == "__main__":
     
     optimizer = optim.Adam(
         mpn.parameters(),
-        lr=3e-4,
-        weight_decay=1e-4,
-        betas=(0.9, 0.999),
+        # lr=3e-4,
+        # weight_decay=1e-4,
+        # betas=(0.9, 0.999),
     )
         
     pbar = tqdm(range(EPOCH))
     for _ in pbar:        
         mpn.eval()
         f1_sum = 0
-        for graph, labels in test_datasets:
+        for graph, labels in train_datasets:
             with torch.no_grad():
                 H = (graph.x[graph.edge_index[0]] - graph.x[graph.edge_index[1]]).pow(2)
                 
@@ -44,7 +44,6 @@ if __name__ == "__main__":
                 predicts = mpn(graph.x, H, graph.edge_index)
                 f1 = f1_score(labels.cpu().numpy(), np.argmax(predicts.cpu().numpy(), axis=1))
             f1_sum += f1
-                # print(confusion_matrix(labels.cpu().numpy(), np.argmax(predicts.cpu().numpy(), axis=1)))
         f1_avg = f1_sum / len(test_datasets)
 
         sum_loss = 0
