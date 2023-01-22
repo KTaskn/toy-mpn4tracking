@@ -46,12 +46,8 @@ class TestPattern:
 def test_generate_labels():    
     df = pd.read_csv("./tests/data/data01.csv")
     labels = generate_labels(df)
-    # 両方向 [[1, 2], [2, 1]]
-    assert len(labels) == len(df.pipe(lambda df: df[df["bf"] != "#"]).index) * 2
-    bf = labels[:len(labels)//2]
-    af = labels[len(labels)//2:]
-    af = torch.vstack((af[:, 1], af[:, 0])).T
-    assert (bf == af).all()
+    # 順方向
+    assert len(labels) == len(df.pipe(lambda df: df[df["bf"] != "#"]).index)
     
     graph = generate_graph(df)
     [row in labels.tolist() for row in graph.edge_index.T.tolist()]

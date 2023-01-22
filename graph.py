@@ -27,10 +27,7 @@ def generate_labels(df):
         on="id"
     )
     return torch.tensor(
-        np.vstack((
-            df[["vidx_x", "vidx_y"]].to_numpy(),
-            df[["vidx_y", "vidx_x"]].to_numpy()
-        )),
+        df[["vidx_y", "vidx_x"]].to_numpy(),
         dtype=torch.long
     )
     
