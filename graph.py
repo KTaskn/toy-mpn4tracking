@@ -11,7 +11,11 @@ def generate_graph(df):
     combis = permutations(df.index.tolist(), 2)
     # 同じ時間は除く
     sames = reduce(lambda a, b: a + b, [list(permutations(grp.index.tolist(), 2)) for idx, grp in df.groupby("time")])
-    edge_index = torch.tensor(list(set(combis) - set(sames)), dtype=torch.long).t()
+    l_edge_index = sorted(
+        list(set(combis) - set(sames)),
+        key=lambda row: (row[0], row[1])
+    )
+    edge_index = torch.tensor(l_edge_index, dtype=torch.long).t()
     x = torch.tensor(df[COLUMNS].to_numpy(), dtype=torch.float)
     return Data(x=x, edge_index=edge_index)
 
