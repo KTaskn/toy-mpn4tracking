@@ -10,8 +10,8 @@ from glob import glob
 from sklearn.metrics import f1_score, confusion_matrix
 from sklearn.utils.class_weight import compute_class_weight
 
-EPOCH = 100000
-NUM_LAYER = 5
+EPOCH = 100
+NUM_LAYER = 20
 CUDA = True
 EDGE_DIM = 5
 if __name__ == "__main__":
@@ -33,7 +33,7 @@ if __name__ == "__main__":
     for _ in pbar:        
         mpn.eval()
         f1_sum = 0
-        for graph, labels in train_datasets:
+        for graph, labels in test_datasets:
             with torch.no_grad():
                 H = (graph.x[graph.edge_index[0]] - graph.x[graph.edge_index[1]]).pow(2)
                 
@@ -50,6 +50,7 @@ if __name__ == "__main__":
         mpn.train()
         for graph, labels in train_datasets:
             H = (graph.x[graph.edge_index[0]] - graph.x[graph.edge_index[1]]).pow(2)
+            
             class_weight = compute_class_weight('balanced', classes=[0, 1], y=labels.numpy())
             weights = torch.tensor(class_weight, dtype=torch.float)
             

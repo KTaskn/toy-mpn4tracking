@@ -10,7 +10,7 @@ class Layer(MessagePassing):
         middle_e = 20
         self.mlp_e = nn.Sequential(
             nn.Linear(dim, middle_e),
-            nn.BatchNorm1d(num_features=middle_e),
+            # nn.BatchNorm1d(num_features=middle_e),
             nn.ReLU(),
             nn.Linear(middle_e, edge_dim),
         )
@@ -18,20 +18,17 @@ class Layer(MessagePassing):
         middle_v = 20
         self.mlp_past = nn.Sequential(
             nn.Linear(dim, middle_v),
-            nn.BatchNorm1d(num_features=middle_v),
             nn.ReLU(),
             nn.Linear(middle_v, node_dim),
         )
         self.mlp_future = nn.Sequential(
             nn.Linear(dim, middle_v),
-            nn.BatchNorm1d(num_features=middle_v),
             nn.ReLU(),
             nn.Linear(middle_v, node_dim),
         )
         dim = node_dim + edge_dim
         self.mlp_v = nn.Sequential(
             nn.Linear(dim, middle_v),
-            nn.BatchNorm1d(num_features=middle_v),
             nn.ReLU(),
             nn.Linear(middle_v, node_dim),
         )
@@ -62,7 +59,6 @@ class MPN(nn.Module):
         middle = 20
         self.mlp = nn.Sequential(
             nn.Linear(edge_dim, middle),
-            nn.BatchNorm1d(num_features=middle),
             nn.ReLU(),
             nn.Linear(middle, 2)
         )
