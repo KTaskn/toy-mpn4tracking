@@ -5,8 +5,8 @@ print("id,bf,time,red,green,blue,x,y")
 
 def randomwalk(rgb, xy):
     rgb = np.random.multinomial(255, np.array(rgb) / np.sum(rgb))    
-    x = np.random.normal(xy[0], 2) // 1
-    y = np.random.normal(xy[1], 2) // 1
+    x = xy[0] + np.random.normal(1, 1) // 1
+    y = xy[1] + np.random.normal(1, 1) // 1
     
     return rgb, [x, y]
 
@@ -31,6 +31,6 @@ def gendata(N):
         print(f"{r:.3},{g:.3},{b:.3},{x},{y}")
 
 if __name__ == "__main__":
-    N, G = 10, 3
+    N, G = 20, 3
     for i in range(G):
         gendata(N)

@@ -7,25 +7,30 @@ class Layer(MessagePassing):
     def __init__(self, node_dim=3, edge_dim=3):
         super().__init__(aggr='add')
         dim = 2 * node_dim + edge_dim
-        middle_e = dim // 2
+        middle_e = 20
         self.mlp_e = nn.Sequential(
             nn.Linear(dim, middle_e),
             nn.BatchNorm1d(num_features=middle_e),
-            # nn.ReLU(),
-            # nn.Linear(middle_e, middle_e),
-            # nn.BatchNorm1d(num_features=middle_e),
+            nn.ReLU(),
+            nn.Linear(middle_e, middle_e),
+            nn.BatchNorm1d(num_features=middle_e),
             nn.ReLU(),
             nn.Linear(middle_e, edge_dim),
+            nn.BatchNorm1d(num_features=edge_dim),
+            nn.ReLU(),
         )
-        middle_v = node_dim
+        dim = node_dim + edge_dim
+        middle_v = 20
         self.mlp_v = nn.Sequential(
-            nn.Linear(2 * node_dim, middle_v),
+            nn.Linear(dim, middle_v),
             nn.BatchNorm1d(num_features=middle_v),
-            # nn.ReLU(),
-            # nn.Linear(middle_v, middle_v),
-            # nn.BatchNorm1d(num_features=middle_v),
+            nn.ReLU(),
+            nn.Linear(middle_v, middle_v),
+            nn.BatchNorm1d(num_features=middle_v),
             nn.ReLU(),
             nn.Linear(middle_v, node_dim),
+            nn.BatchNorm1d(num_features=node_dim),
+            nn.ReLU(),
         )
 
     def forward(self, M, H, edge_index):
@@ -41,19 +46,19 @@ class Layer(MessagePassing):
         return super().aggregate(M, index, ptr, dim_size), H, edge_index
     
 class MPN(nn.Module):
-    def __init__(self, node_dim=3, edge_dim=3, num_layer=20):
+    def __init__(self, node_dim=3, edge_dim=3, num_layer=12):
         super().__init__()
+        self.layer = Layer(node_dim, edge_dim).cuda()
         self.num_layer = num_layer
-        self.layer = Layer(node_dim, edge_dim)
+        middle = 20
         self.mlp = nn.Sequential(
-            nn.Linear(edge_dim, edge_dim),
-            nn.BatchNorm1d(num_features=edge_dim),
-            # nn.ReLU(),
-            # nn.Linear(edge_dim, edge_dim),
-            # nn.BatchNorm1d(num_features=edge_dim),
+            nn.Linear(edge_dim, middle),
+            nn.BatchNorm1d(num_features=middle),
             nn.ReLU(),
-            nn.Linear(edge_dim, 2),
-            nn.Softmax(dim=1)
+            nn.Linear(middle, middle),
+            nn.BatchNorm1d(num_features=middle),
+            nn.ReLU(),
+            nn.Linear(middle, 2)
         )
         
     def forward(self, M, H, edge_index):
