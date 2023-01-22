@@ -5,8 +5,8 @@ print("id,bf,time,red,green,blue,x,y")
 
 def randomwalk(rgb, xy):
     rgb = np.random.multinomial(255, np.array(rgb) / np.sum(rgb))    
-    x = xy[0] + np.random.normal(1, 1) // 1
-    y = xy[1] + np.random.normal(1, 1) // 1
+    x = xy[0] + np.random.normal(0, 1) // 1
+    y = xy[1] + np.random.normal(0, 1) // 1
     
     return rgb, [x, y]
 
