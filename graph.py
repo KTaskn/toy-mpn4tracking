@@ -7,14 +7,12 @@ import numpy as np
 
 COLUMNS = ["red", "green", "blue", "x", "y"]
 def generate_graph(df):
-    # すべてのくみあわせ
-    combis = permutations(df.index.tolist(), 2)
-    # 同じ時間は除く
-    sames = reduce(lambda a, b: a + b, [list(permutations(grp.index.tolist(), 2)) for idx, grp in df.groupby("time")])
-    l_edge_index = sorted(
-        list(set(combis) - set(sames)),
-        key=lambda row: (row[0], row[1])
-    )
+    l_edge_index = [
+        (bf, af)
+        for time, bf_grp in df.groupby("time")
+        for bf in bf_grp.index
+        for af in df[df["time"] > time].index
+    ]
     edge_index = torch.tensor(l_edge_index, dtype=torch.long).t()
     x = torch.tensor(df[COLUMNS].to_numpy(), dtype=torch.float)
     return Data(x=x, edge_index=edge_index)

@@ -8,38 +8,38 @@ def test_generate_graph():
     graph = generate_graph(df)
     assert type(graph) is Data
     assert graph.num_nodes == len(df.index)
-    assert graph.num_edges == (df["time"].count() * (df["time"].count() - 1)) - (df["time"].value_counts() *(df["time"].value_counts() - 1)).sum()
-    assert graph.is_directed() is False
+    assert graph.num_edges == ((df["time"].count() * (df["time"].count() - 1)) - (df["time"].value_counts() *(df["time"].value_counts() - 1)).sum()) // 2
+    assert graph.is_undirected() is False
     
 class TestPattern:
     def test_data01(self):
         df = pd.read_csv("./tests/data/data01.csv")
         graph, labels = generate_train_dataset(df)
         assert graph.num_nodes == 2
-        assert graph.num_edges == 1 * 2
-        assert (labels == torch.tensor([1, 1], dtype=torch.long)).all()
+        assert graph.num_edges == 1
+        assert (labels == torch.tensor([1], dtype=torch.long)).all()
 
 
     def test_data02(self):
         df = pd.read_csv("./tests/data/data02.csv")
         graph, labels = generate_train_dataset(df)
         assert graph.num_nodes == 2
-        assert graph.num_edges == 2
-        assert (labels == torch.tensor([0, 0], dtype=torch.long)).all()
+        assert graph.num_edges == 1
+        assert (labels == torch.tensor([0], dtype=torch.long)).all()
         
     def test_data03(self):
         df = pd.read_csv("./tests/data/data03.csv")
         graph, labels = generate_train_dataset(df)
         assert graph.num_nodes == 3
-        assert graph.num_edges == 2 * 2
-        assert (labels == torch.tensor([1, 0, 1, 0], dtype=torch.long)).all()
+        assert graph.num_edges == 2
+        assert (labels == torch.tensor([1, 0], dtype=torch.long)).all()
         
     def test_data04(self):
         df = pd.read_csv("./tests/data/data04.csv")
         graph, labels = generate_train_dataset(df)
         assert graph.num_nodes == 4
-        assert graph.num_edges == 5 * 2
-        assert (labels == torch.tensor([1, 0, 0, 0, 1, 0, 1, 0, 0, 1], dtype=torch.long)).all()
+        assert graph.num_edges == 5
+        assert (labels == torch.tensor([1, 0, 0, 0, 1], dtype=torch.long)).all()
         
         
         
