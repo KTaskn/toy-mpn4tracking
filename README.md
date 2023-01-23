@@ -1,7 +1,23 @@
-# generates a datasets
+# Training set of Message Passing Network for Multi object tracking
+This repository is a training set of Message Passing Network for Multi Object Tracking.
+The idea of MPN for MOT comes from [Learning a Neural Solver for Multiple Object Tracking](https://github.com/dvl-tum/mot_neural_solver)
+
+# Setup
+You can set up an environment with Docker
+
+```shell
+docker build . --tag=tsmpn4mot
+docker run --rm -ti --gpus all -v $PWD:/work -w /work tsmpn4mot bash
+```
+
+# Generates dataset
+
 ``` shell
-for i in `seq -f '%03g' 0 9`
-do
-    python gendata.py > datasets/$i.csv
-done
+sh data/generate.sh
+```
+
+# Run
+
+``` shell
+python main.py
 ```

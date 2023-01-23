@@ -14,6 +14,7 @@ EPOCH = 100
 NUM_LAYER = 20
 CUDA = True
 EDGE_DIM = 5
+
 if __name__ == "__main__":
     print("loading datasets")
     train_datasets = [generate_train_dataset(pd.read_csv(fname)) for fname in glob("data/train/*.csv")]

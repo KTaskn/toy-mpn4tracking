@@ -10,7 +10,6 @@ class Layer(MessagePassing):
         middle_e = 20
         self.mlp_e = nn.Sequential(
             nn.Linear(dim, middle_e),
-            # nn.BatchNorm1d(num_features=middle_e),
             nn.ReLU(),
             nn.Linear(middle_e, edge_dim),
         )
